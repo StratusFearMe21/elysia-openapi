@@ -402,21 +402,9 @@ var enumToOpenApi = (_schema) => {
     if (schema2[Kind] === "Ref" && schema2.$ref)
       return toRef(schema2.$ref);
   }
-  const schema = _schema;
-  if (schema.type === "object" && schema.properties) {
-    const properties = {};
-    for (const [key, value] of Object.entries(schema.properties))
-      properties[key] = enumToOpenApi(value);
-    return {
-      ...schema,
-      properties
-    };
-  }
-  if (schema.type === "array" && schema.items)
-    return {
-      ...schema,
-      items: enumToOpenApi(schema.items)
-    };
+  const schema = Array.isArray(_schema) ? [..._schema] : { ..._schema };
+  for (const [key, value] of Object.entries(schema))
+    schema[key] = enumToOpenApi(value);
   return schema;
 };
 function toOpenAPISchema(app, exclude, references, vendors) {
