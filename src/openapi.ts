@@ -652,10 +652,10 @@ export const enumToOpenApi = <
 			return toRef(schema.$ref) as any;
 	}
 
-	const schema = _schema as TAnySchema;
+	const schema: any = Array.isArray(_schema) ? [..._schema] : { ..._schema }
 
 	for (const [key, value] of Object.entries(schema))
-		schema[key] = enumToOpenApi(value)
+		schema[key] = enumToOpenApi(value as any)
 
 	return schema as T
 }

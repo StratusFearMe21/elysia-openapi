@@ -1,8 +1,10 @@
 import { Elysia, t } from 'elysia'
+import openapi from '../src'
 
-export const plugin = new Elysia({
+ new Elysia({
     prefix: '/a'
 })
+    .use(openapi())
     .model({
         sign: t.Object(
             {
@@ -32,11 +34,11 @@ export const plugin = new Elysia({
             deprecated: true
         }
     })
-    .post('/json', ({ body }) => body, {
+    .post('/json', ({ body }) => [body], {
         type: 'json',
         body: 'sign',
         response: {
-            200: 'sign'
+            200: t.Array(t.Union([t.Ref('sign'), t.Ref('number')]))
         },
         detail: {
             summary: 'Using reference model'
@@ -102,7 +104,7 @@ export const plugin = new Elysia({
             })
         }),
         response: t.File()
-    })
+    }).listen(3001)
 // .post('/files', ({ body: { files } }) => files[0], {
 //     schema: {
 //         body: t.Object({
